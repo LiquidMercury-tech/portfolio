@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dipson — Contact</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="card-tabs">
+  <div class="card-tabs__inner">
+    <a href="home.html" class="brand"><span class="dot">●</span> Dipson<span aria-hidden="true">.</span></a>
+    <a href="home.html" class="tab">Home</a>
+    <a href="about.html" class="tab">About</a>
+    <a href="skills.html" class="tab">Skills</a>
+    <a href="projects.html" class="tab">Projects</a>
+    <a href="blogs.php" class="tab">Blog</a>
+    <a href="gallery.html" class="tab">Gallery</a>
+    <a href="contact.html" class="tab">Contact</a>
+  </div>
+</nav>
+
+<header class="container" style="padding:64px 0 20px;">
+  <span class="eyebrow reveal">Index No. 06 — Contact</span>
+  <h1 class="reveal" style="font-size:clamp(2.2rem,5vw,3.4rem);margin-top:12px;max-width:16ch;">Let's talk.</h1>
+  <p class="reveal" style="max-width:50ch;margin-top:14px;color:var(--umber);">Have a project, a question, or just want to say hello? Fill in the card below.</p>
+</header>
+
+<main class="container">
+  <section class="section" style="padding-top:20px;max-width:640px;">
+    <form class="form-card reveal" id="contactForm" action="php/contact_process.php" method="POST" novalidate>
+
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Your full name" required>
+        <span class="field-error">Enter your full name.</span>
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+        <span class="field-error">Enter a valid email address.</span>
+      </div>
+
+      <div class="field">
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" name="subject" placeholder="What's this about?" required>
+        <span class="field-error">Add a short subject line.</span>
+      </div>
+
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" placeholder="Write your message here..." required></textarea>
+        <span class="field-error">Message should be at least 10 characters.</span>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="border:none;cursor:pointer;">Send Message</button>
+      <div class="form-status" id="formStatus"></div>
+    </form>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__top">
+      <a href="home.html" class="brand">Dipson.</a>
+      <div class="social-links">
+        <a href="#">GitHub</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Twitter</a>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 Dipson. All rights reserved.</span>
+      <span>Kathmandu, Nepal</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dipson — Projects</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="card-tabs">
+  <div class="card-tabs__inner">
+    <a href="home.html" class="brand"><span class="dot">●</span> Dipson<span aria-hidden="true">.</span></a>
+    <a href="home.html" class="tab">Home</a>
+    <a href="about.html" class="tab">About</a>
+    <a href="skills.html" class="tab">Skills</a>
+    <a href="projects.html" class="tab">Projects</a>
+    <a href="blogs.php" class="tab">Blog</a>
+    <a href="gallery.html" class="tab">Gallery</a>
+    <a href="contact.html" class="tab">Contact</a>
+  </div>
+</nav>
+
+<header class="container" style="padding:64px 0 20px;">
+  <span class="eyebrow reveal">Index No. 04 — Projects</span>
+  <h1 class="reveal" style="font-size:clamp(2.2rem,5vw,3.4rem);margin-top:12px;max-width:20ch;">Selected work.</h1>
+</header>
+
+<main class="container">
+  <section class="section" style="padding-top:20px;">
+    <div class="project-grid">
+
+      <article class="project-card reveal">
+        <div class="project-card__img">
+          <span class="project-card__num">01</span>
+          <img src="images/project-nepse.jpg" alt="NEPSE forecasting dashboard" onerror="this.style.display='none'">
+        </div>
+        <div class="project-card__body">
+          <h3>NEPSE Market Forecasting</h3>
+          <p>A stock analysis pipeline for the Nepal Stock Exchange using ARIMA/GARCH and LSTM models, with a visualization dashboard for trend and volatility forecasting.</p>
+          <div class="project-card__tags"><span>Python</span><span>LSTM</span><span>Data Viz</span></div>
+          <button class="details-btn" data-open-modal
+            data-title="NEPSE Market Forecasting"
+            data-eyebrow="Data Science"
+            data-details="Built a full forecasting pipeline for Nepal's stock market combining classical time-series models (ARIMA/GARCH) with deep learning (LSTM) to predict price trends and volatility. Included data cleaning, feature engineering, backtesting, and an interactive dashboard for visualizing forecasts against historical performance.">
+            View Details
+          </button>
+        </div>
+      </article>
+
+      <article class="project-card reveal">
+        <div class="project-card__img">
+          <span class="project-card__num">02</span>
+          <img src="images/project-airquality.jpg" alt="Kathmandu air quality analysis" onerror="this.style.display='none'">
+        </div>
+        <div class="project-card__body">
+          <h3>Kathmandu PM2.5 Air Quality Study</h3>
+          <p>A research-grade analysis of particulate matter levels across Kathmandu, examining seasonal trends and contributing factors behind poor air quality.</p>
+          <div class="project-card__tags"><span>Python</span><span>Pandas</span><span>Research</span></div>
+          <button class="details-btn" data-open-modal
+            data-title="Kathmandu PM2.5 Air Quality Study"
+            data-eyebrow="Environmental Data"
+            data-details="Analyzed PM2.5 concentration data across Kathmandu Valley to identify seasonal pollution patterns and probable contributing factors such as traffic density and winter inversion effects. Presented findings through statistical summaries and visualizations aimed at a research audience.">
+            View Details
+          </button>
+        </div>
+      </article>
+
+      <article class="project-card reveal">
+        <div class="project-card__img">
+          <span class="project-card__num">03</span>
+          <img src="images/project-tunnel-farming.jpg" alt="Tunnel farming project" onerror="this.style.display='none'">
+        </div>
+        <div class="project-card__body">
+          <h3>Tunnel Farming Feasibility — Kirtipur</h3>
+          <p>An agricultural and financial feasibility presentation for tunnel farming in Kirtipur, Kathmandu, covering setup costs, crop planning, and expected returns.</p>
+          <div class="project-card__tags"><span>Research</span><span>Finance</span><span>Presentation</span></div>
+          <button class="details-btn" data-open-modal
+            data-title="Tunnel Farming Feasibility — Kirtipur"
+            data-eyebrow="Agriculture &amp; Finance"
+            data-details="Prepared a detailed presentation on tunnel farming feasibility for Kirtipur, covering structure setup costs, suitable crop selection, seasonal planning, and a financial breakdown of expected yields and returns for smallholder farmers.">
+            View Details
+          </button>
+        </div>
+      </article>
+
+      <article class="project-card reveal">
+        <div class="project-card__img">
+          <span class="project-card__num">04</span>
+          <img src="images/project-dashboard.jpg" alt="Personal productivity dashboard" onerror="this.style.display='none'">
+        </div>
+        <div class="project-card__body">
+          <h3>Personal Productivity Dashboard</h3>
+          <p>A multi-page HTML/JavaScript dashboard with local persistence for tracking study sessions, tasks, and daily goals.</p>
+          <div class="project-card__tags"><span>JavaScript</span><span>HTML/CSS</span><span>UX</span></div>
+          <button class="details-btn" data-open-modal
+            data-title="Personal Productivity Dashboard"
+            data-eyebrow="Web Application"
+            data-details="Designed and built a multi-page personal dashboard for tracking study sessions, tasks, and habits, using vanilla JavaScript with localStorage for persistence across sessions — no backend required.">
+            View Details
+          </button>
+        </div>
+      </article>
+
+    </div>
+  </section>
+</main>
+
+<!-- Project details modal -->
+<div class="modal-overlay" id="projectModal">
+  <div class="modal">
+    <button class="modal__close" aria-label="Close">✕</button>
+    <span class="eyebrow" data-modal-eyebrow>Project</span>
+    <h3 data-modal-title></h3>
+    <p data-modal-body></p>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__top">
+      <a href="home.html" class="brand">Dipson.</a>
+      <div class="social-links">
+        <a href="#">GitHub</a>
+        <a href="#">LinkedIn</a>
+        <a href="#">Twitter</a>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© 2026 Dipson. All rights reserved.</span>
+      <span>Kathmandu, Nepal</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>
