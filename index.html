@@ -1,5 +1,5 @@
-<!-- index.php -->
 <?php
+// index.php
 // Database configuration
 $host = 'localhost';
 $dbname = 'portfolio_db';
@@ -10,71 +10,136 @@ $password = '';
 try {
     $conn = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
+    $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Connection failed: " . htmlspecialchars($e->getMessage()));
+}
+
+/**
+ * Turn a title into a URL-safe, unique slug.
+ * Appends -2, -3, etc. if the base slug is already taken.
+ */
+function generateUniqueSlug(PDO $conn, string $title, ?int $ignoreId = null): string
+{
+    $base = strtolower(trim($title));
+    $base = preg_replace('/[^a-z0-9]+/', '-', $base);
+    $base = trim($base, '-');
+    if ($base === '') {
+        $base = 'post';
+    }
+
+    $slug = $base;
+    $suffix = 2;
+
+    while (true) {
+        $sql = "SELECT id FROM blogs WHERE slug = ?" . ($ignoreId ? " AND id != ?" : "");
+        $stmt = $conn->prepare($sql);
+        $params = $ignoreId ? [$slug, $ignoreId] : [$slug];
+        $stmt->execute($params);
+        if (!$stmt->fetch()) {
+            break;
+        }
+        $slug = $base . '-' . $suffix;
+        $suffix++;
+    }
+
+    return $slug;
 }
 
 // Handle Blog CRUD Operations
 $message = '';
+$errorMessage = '';
 $editMode = false;
 $editPost = null;
 
 // DELETE
 if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
-    $id = $_GET['delete'];
-    $stmt = $conn->prepare("DELETE FROM blogs WHERE id = ?");
-    $stmt->execute([$id]);
+    try {
+        $stmt = $conn->prepare("DELETE FROM blogs WHERE id = ?");
+        $stmt->execute([(int) $_GET['delete']]);
+    } catch (PDOException $e) {
+        // fall through — redirect regardless so the URL doesn't stay dirty
+    }
     header("Location: index.php#blog");
     exit;
 }
 
 // EDIT - Load post data
 if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
-    $editMode = true;
     $stmt = $conn->prepare("SELECT * FROM blogs WHERE id = ?");
-    $stmt->execute([$_GET['edit']]);
-    $editPost = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->execute([(int) $_GET['edit']]);
+    $editPost = $stmt->fetch();
+    $editMode = (bool) $editPost; // only true if a matching row was actually found
+    if (!$editPost) {
+        $errorMessage = "That post couldn't be found — it may have already been deleted.";
+    }
 }
 
 // CREATE or UPDATE
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['blog_submit'])) {
-    $title = htmlspecialchars(trim($_POST['title']));
-    $date = $_POST['date'];
-    $category = htmlspecialchars(trim($_POST['category']));
-    $image = htmlspecialchars(trim($_POST['image']));
-    $content = htmlspecialchars(trim($_POST['content']));
-    
-    if (!empty($_POST['post_id'])) {
-        // UPDATE
-        $stmt = $conn->prepare("UPDATE blogs SET title=?, date=?, category=?, image=?, content=? WHERE id=?");
-        $stmt->execute([$title, $date, $category, $image, $content, $_POST['post_id']]);
-        $message = "Post updated successfully!";
+    $title    = trim($_POST['title'] ?? '');
+    $postDate = trim($_POST['date'] ?? '');
+    $category = trim($_POST['category'] ?? '');
+    $image    = trim($_POST['image'] ?? '');
+    $content  = trim($_POST['content'] ?? '');
+    $postId   = !empty($_POST['post_id']) ? (int) $_POST['post_id'] : null;
+
+    if ($title === '' || $postDate === '' || $category === '' || $content === '') {
+        $errorMessage = "Please fill in all required fields.";
     } else {
-        // CREATE
-        $stmt = $conn->prepare("INSERT INTO blogs (title, date, category, image, content) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$title, $date, $category, $image, $content]);
-        $message = "Post created successfully!";
+        try {
+            if ($postId) {
+                // UPDATE — keep the existing slug untouched
+                $stmt = $conn->prepare(
+                    "UPDATE blogs SET title=?, post_date=?, category=?, image=?, content=? WHERE id=?"
+                );
+                $stmt->execute([$title, $postDate, $category, $image, $content, $postId]);
+                $message = "Post updated successfully!";
+            } else {
+                // CREATE — generate a fresh, unique slug from the title
+                $slug = generateUniqueSlug($conn, $title);
+                $stmt = $conn->prepare(
+                    "INSERT INTO blogs (title, slug, post_date, category, image, content) VALUES (?, ?, ?, ?, ?, ?)"
+                );
+                $stmt->execute([$title, $slug, $postDate, $category, $image, $content]);
+                $message = "Post created successfully!";
+            }
+            header("Location: index.php#blog");
+            exit;
+        } catch (PDOException $e) {
+            $errorMessage = "Something went wrong while saving the post. Please try again.";
+        }
     }
-    header("Location: index.php#blog");
-    exit;
 }
 
 // Handle Contact Form
+$contactMessage = '';
+$contactError = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_submit'])) {
-    $name = htmlspecialchars(trim($_POST['name']));
-    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL);
-    $subject = htmlspecialchars(trim($_POST['subject']));
-    $message_text = htmlspecialchars(trim($_POST['message']));
-    
-    $stmt = $conn->prepare("INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)");
-    $stmt->execute([$name, $email, $subject, $message_text]);
-    $contactMessage = "Message sent successfully!";
+    $name    = trim($_POST['name'] ?? '');
+    $email   = trim($_POST['email'] ?? '');
+    $subject = trim($_POST['subject'] ?? '');
+    $messageText = trim($_POST['message'] ?? '');
+
+    if ($name === '' || $subject === '' || $messageText === '' ||
+        !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $contactError = "Please fill in all fields with a valid email address.";
+    } else {
+        try {
+            $stmt = $conn->prepare(
+                "INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)"
+            );
+            $stmt->execute([$name, $email, $subject, $messageText]);
+            $contactMessage = "Message sent successfully! I'll get back to you soon.";
+        } catch (PDOException $e) {
+            $contactError = "Something went wrong while sending your message. Please try again.";
+        }
+    }
 }
 
-// Fetch all blogs
-$blogs = $conn->query("SELECT * FROM blogs ORDER BY date DESC")->fetchAll(PDO::FETCH_ASSOC);
+// Fetch all blogs (most recent first)
+$blogs = $conn->query("SELECT * FROM blogs ORDER BY post_date DESC")->fetchAll();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,7 +154,7 @@ $blogs = $conn->query("SELECT * FROM blogs ORDER BY date DESC")->fetchAll(PDO::F
     <!-- Navbar -->
     <nav class="navbar">
         <div class="nav-brand">Portfolio</div>
-        <button class="nav-toggle" onclick="toggleMenu()">
+        <button class="nav-toggle" onclick="toggleMenu()" aria-label="Toggle navigation">
             <i class="fas fa-bars"></i>
         </button>
         <ul class="nav-menu" id="navMenu">
@@ -108,7 +173,7 @@ $blogs = $conn->query("SELECT * FROM blogs ORDER BY date DESC")->fetchAll(PDO::F
         <div class="home-content">
             <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face" alt="Profile" class="profile-img">
             <h1>John Doe</h1>
-            <p class="tagline">Full-Stack Developer & Creative Thinker</p>
+            <p class="tagline">Full-Stack Developer &amp; Creative Thinker</p>
             <p class="intro">Welcome to my personal portfolio. I build clean, efficient, and user-friendly web applications.</p>
             <a href="#projects" class="btn btn-primary">View My Work</a>
         </div>
@@ -131,7 +196,7 @@ $blogs = $conn->query("SELECT * FROM blogs ORDER BY date DESC")->fetchAll(PDO::F
                 </div>
                 <div class="about-card">
                     <i class="fas fa-heart"></i>
-                    <h3>Hobbies & Interests</h3>
+                    <h3>Hobbies &amp; Interests</h3>
                     <p>Photography, hiking, open-source contributing, and exploring new programming languages and frameworks.</p>
                 </div>
             </div>
@@ -144,33 +209,33 @@ $blogs = $conn->query("SELECT * FROM blogs ORDER BY date DESC")->fetchAll(PDO::F
             <h2 class="section-title">Skills</h2>
             <div class="skills-grid">
                 <div class="skill-item">
-                    <span class="skill-name">HTML5 & CSS3</span>
-                    <div class="progress-bar"><div class="progress" style="width: 95%"></div></div>
+                    <span class="skill-name">HTML5 &amp; CSS3</span>
+                    <div class="progress-bar"><div class="progress" data-percent="95"></div></div>
                     <span class="skill-percent">95%</span>
                 </div>
                 <div class="skill-item">
                     <span class="skill-name">JavaScript</span>
-                    <div class="progress-bar"><div class="progress" style="width: 85%"></div></div>
+                    <div class="progress-bar"><div class="progress" data-percent="85"></div></div>
                     <span class="skill-percent">85%</span>
                 </div>
                 <div class="skill-item">
-                    <span class="skill-name">PHP & MySQL</span>
-                    <div class="progress-bar"><div class="progress" style="width: 80%"></div></div>
+                    <span class="skill-name">PHP &amp; MySQL</span>
+                    <div class="progress-bar"><div class="progress" data-percent="80"></div></div>
                     <span class="skill-percent">80%</span>
                 </div>
                 <div class="skill-item">
                     <span class="skill-name">React</span>
-                    <div class="progress-bar"><div class="progress" style="width: 75%"></div></div>
+                    <div class="progress-bar"><div class="progress" data-percent="75"></div></div>
                     <span class="skill-percent">75%</span>
                 </div>
                 <div class="skill-item">
                     <span class="skill-name">Python</span>
-                    <div class="progress-bar"><div class="progress" style="width: 70%"></div></div>
+                    <div class="progress-bar"><div class="progress" data-percent="70"></div></div>
                     <span class="skill-percent">70%</span>
                 </div>
                 <div class="skill-item">
                     <span class="skill-name">Communication</span>
-                    <div class="progress-bar"><div class="progress" style="width: 90%"></div></div>
+                    <div class="progress-bar"><div class="progress" data-percent="90"></div></div>
                     <span class="skill-percent">90%</span>
                 </div>
             </div>
@@ -214,42 +279,45 @@ $blogs = $conn->query("SELECT * FROM blogs ORDER BY date DESC")->fetchAll(PDO::F
     <section id="blog" class="section blog-section">
         <div class="container">
             <h2 class="section-title">Personal Blog</h2>
-            
+
             <?php if ($message): ?>
-                <div class="alert alert-success"><?php echo $message; ?></div>
+                <div class="alert alert-success"><?php echo htmlspecialchars($message); ?></div>
+            <?php endif; ?>
+            <?php if ($errorMessage): ?>
+                <div class="alert alert-error"><?php echo htmlspecialchars($errorMessage); ?></div>
             <?php endif; ?>
 
             <!-- Blog Form -->
             <div class="blog-form-container">
                 <h3><?php echo $editMode ? 'Edit Post' : 'Add New Post'; ?></h3>
                 <form method="POST" action="index.php#blog" class="blog-form" id="blogForm" onsubmit="return validateBlogForm()">
-                    <input type="hidden" name="post_id" value="<?php echo $editMode ? $editPost['id'] : ''; ?>">
-                    
+                    <input type="hidden" name="post_id" value="<?php echo $editMode ? (int) $editPost['id'] : ''; ?>">
+
                     <div class="form-group">
-                        <input type="text" name="title" id="blogTitle" placeholder="Post Title" 
+                        <input type="text" name="title" id="blogTitle" placeholder="Post Title"
                                value="<?php echo $editMode ? htmlspecialchars($editPost['title']) : ''; ?>" required>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
-                            <input type="date" name="date" id="blogDate" 
-                                   value="<?php echo $editMode ? $editPost['date'] : date('Y-m-d'); ?>" required>
+                            <input type="date" name="date" id="blogDate"
+                                   value="<?php echo $editMode ? date('Y-m-d', strtotime($editPost['post_date'])) : date('Y-m-d'); ?>" required>
                         </div>
                         <div class="form-group">
-                            <input type="text" name="category" id="blogCategory" placeholder="Category" 
+                            <input type="text" name="category" id="blogCategory" placeholder="Category"
                                    value="<?php echo $editMode ? htmlspecialchars($editPost['category']) : ''; ?>" required>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
-                        <input type="url" name="image" id="blogImage" placeholder="Image URL" 
-                               value="<?php echo $editMode ? htmlspecialchars($editPost['image']) : ''; ?>" required>
+                        <input type="url" name="image" id="blogImage" placeholder="Image URL"
+                               value="<?php echo $editMode ? htmlspecialchars($editPost['image']) : ''; ?>">
                     </div>
-                    
+
                     <div class="form-group">
                         <textarea name="content" id="blogContent" rows="4" placeholder="Post Content" required><?php echo $editMode ? htmlspecialchars($editPost['content']) : ''; ?></textarea>
                     </div>
-                    
+
                     <div class="form-actions">
                         <button type="submit" name="blog_submit" class="btn btn-primary">
                             <?php echo $editMode ? 'Update Post' : 'Add Post'; ?>
@@ -263,19 +331,26 @@ $blogs = $conn->query("SELECT * FROM blogs ORDER BY date DESC")->fetchAll(PDO::F
 
             <!-- Blog Posts -->
             <div class="blog-grid">
+                <?php if (empty($blogs)): ?>
+                    <p class="empty-state">No blog posts yet. Add your first one above!</p>
+                <?php endif; ?>
                 <?php foreach ($blogs as $blog): ?>
                 <article class="blog-card">
-                    <img src="<?php echo htmlspecialchars($blog['image']); ?>" alt="<?php echo htmlspecialchars($blog['title']); ?>">
+                    <?php if (!empty($blog['image'])): ?>
+                        <img src="<?php echo htmlspecialchars($blog['image']); ?>" alt="<?php echo htmlspecialchars($blog['title']); ?>">
+                    <?php else: ?>
+                        <img src="https://placehold.co/500x300/4f46e5/ffffff?text=<?php echo urlencode($blog['category'] ?: 'Blog'); ?>" alt="<?php echo htmlspecialchars($blog['title']); ?>">
+                    <?php endif; ?>
                     <div class="blog-content">
                         <div class="blog-meta">
-                            <span class="blog-date"><i class="fas fa-calendar"></i> <?php echo $blog['date']; ?></span>
+                            <span class="blog-date"><i class="fas fa-calendar"></i> <?php echo date('F j, Y', strtotime($blog['post_date'])); ?></span>
                             <span class="blog-category"><?php echo htmlspecialchars($blog['category']); ?></span>
                         </div>
                         <h3><?php echo htmlspecialchars($blog['title']); ?></h3>
                         <p><?php echo nl2br(htmlspecialchars($blog['content'])); ?></p>
                         <div class="blog-actions">
-                            <a href="index.php?edit=<?php echo $blog['id']; ?>#blog" class="btn btn-edit"><i class="fas fa-edit"></i> Edit</a>
-                            <a href="index.php?delete=<?php echo $blog['id']; ?>#blog" class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this post?')"><i class="fas fa-trash"></i> Delete</a>
+                            <a href="index.php?edit=<?php echo (int) $blog['id']; ?>#blog" class="btn btn-edit"><i class="fas fa-edit"></i> Edit</a>
+                            <a href="index.php?delete=<?php echo (int) $blog['id']; ?>#blog" class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this post?')"><i class="fas fa-trash"></i> Delete</a>
                         </div>
                     </div>
                 </article>
@@ -303,9 +378,12 @@ $blogs = $conn->query("SELECT * FROM blogs ORDER BY date DESC")->fetchAll(PDO::F
     <section id="contact" class="section contact-section">
         <div class="container">
             <h2 class="section-title">Contact Me</h2>
-            
-            <?php if (isset($contactMessage)): ?>
-                <div class="alert alert-success"><?php echo $contactMessage; ?></div>
+
+            <?php if ($contactMessage): ?>
+                <div class="alert alert-success"><?php echo htmlspecialchars($contactMessage); ?></div>
+            <?php endif; ?>
+            <?php if ($contactError): ?>
+                <div class="alert alert-error"><?php echo htmlspecialchars($contactError); ?></div>
             <?php endif; ?>
 
             <form method="POST" action="index.php#contact" class="contact-form" id="contactForm" onsubmit="return validateContactForm()">
@@ -319,7 +397,7 @@ $blogs = $conn->query("SELECT * FROM blogs ORDER BY date DESC")->fetchAll(PDO::F
                     <input type="text" name="subject" id="contactSubject" placeholder="Subject" required>
                 </div>
                 <div class="form-group">
-                    <textarea name="message" id="contactMessage" rows="5" placeholder="Your Message" required></textarea>
+                    <textarea name="message" id="contactMessageField" rows="5" placeholder="Your Message" required></textarea>
                 </div>
                 <button type="submit" name="contact_submit" class="btn btn-primary">Send Message</button>
             </form>
@@ -329,10 +407,10 @@ $blogs = $conn->query("SELECT * FROM blogs ORDER BY date DESC")->fetchAll(PDO::F
     <!-- Footer -->
     <footer class="footer">
         <div class="social-links">
-            <a href="#"><i class="fab fa-github"></i></a>
-            <a href="#"><i class="fab fa-linkedin"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
         </div>
         <p>&copy; <?php echo date('Y'); ?> John Doe. All rights reserved.</p>
     </footer>
