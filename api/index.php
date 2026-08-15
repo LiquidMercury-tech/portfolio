@@ -358,29 +358,13 @@ $blogs = $conn->query("SELECT * FROM blogs ORDER BY post_date DESC")->fetchAll()
         <h2 class="section-title">Gallery</h2>
         <div class="gallery-grid" style="display: flex; flex-direction: row; gap: 24px; align-items: center; justify-content: center; flex-wrap: nowrap;">
             
-            <img 
-                src="img1.jpeg" 
-                alt="Gallery 1" 
-                style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; display: block; flex-shrink: 0;"
-            >
+            <img src="public/img1.jpeg" alt="Gallery 1" style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; flex-shrink: 0;">
             
-            <img 
-                src="img2.jpeg" 
-                alt="Gallery 2" 
-                style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; display: block; transform: rotate(270deg); flex-shrink: 0;"
-            >
+            <img src="public/img2.jpeg" alt="Gallery 2" style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; transform: rotate(270deg); flex-shrink: 0;">
             
-            <img 
-                src="img3.jpeg" 
-                alt="Gallery 3" 
-                style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; display: block; flex-shrink: 0;"
-            >
+            <img src="public/img3.jpeg" alt="Gallery 3" style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; flex-shrink: 0;">
             
-            <img 
-                src="img4.jpeg" 
-                alt="Gallery 4" 
-                style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; display: block; flex-shrink: 0;"
-            >
+            <img src="public/img4.jpeg" alt="Gallery 4" style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; flex-shrink: 0;">
             
         </div>
     </div>
