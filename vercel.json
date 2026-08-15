@@ -6,6 +6,7 @@
     { "src": "/style.css", "dest": "/style.css" },
     { "src": "/main.js", "dest": "/main.js" },
     { "src": "/uploads/(.*)", "dest": "/uploads/$1" },
+    { "src": "/images/(.*)", "dest": "/api/public/$1" },
     { "src": "/(.*)", "dest": "/api/index.php" }
   ]
 }
