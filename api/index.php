@@ -368,8 +368,7 @@ $blogs = $conn->query("SELECT * FROM blogs ORDER BY post_date DESC")->fetchAll()
 </section>
     <section id="gallery" class="section gallery-section">
     <div class="container">
-        <span class="eyebrow">// gallery</span>
-        <h2 class="section-title">Gallery</h2>
+        
         <div class="gallery-grid" style="display: flex; flex-direction: row; gap: 24px; align-items: center; justify-content: center; flex-wrap: nowrap;">
             
             <img src="https://i.pinimg.com/1200x/1d/55/09/1d55091cd7e15913bd418d688e9ea765.jpg" alt="Gallery 2" style="width: 200px; height: 200px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; transform: rotate(270deg); flex-shrink: 0;">
