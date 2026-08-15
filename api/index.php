@@ -358,13 +358,25 @@ $blogs = $conn->query("SELECT * FROM blogs ORDER BY post_date DESC")->fetchAll()
         <h2 class="section-title">Gallery</h2>
         <div class="gallery-grid" style="display: flex; flex-direction: row; gap: 24px; align-items: center; justify-content: center; flex-wrap: nowrap;">
             
-            <img src="https://i.pinimg.com/1200x/62/0b/4b/620b4b6698eb2ad65be08f4acd1d029b.jpg" alt="Gallery 1" style="width: 200px; height: 200px; object-fit: cover; margin: 20px; border-radius: 12px; display: block; flex-shrink: 0;">
+            <img src="https://i.pinimg.com/1200x/bd/57/a6/bd57a609a2ea9a5f37ff2ed764571d91.jpg" alt="Gallery 1" style="width: 200px; height: 200px; object-fit: cover; margin: 20px; border-radius: 12px; display: block; flex-shrink: 0;">
+            <img src="https://i.pinimg.com/1200x/1b/5f/c4/1b5fc4831b1f8a36c0de3864fa52216e.jpg" alt="Gallery 2" style="width: 200px; height: 200px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; flex-shrink: 0;">         
+            <img src="https://i.pinimg.com/1200x/88/db/2c/88db2ca3f14b2d09135b2e80c7eed12a.jpg" alt="Gallery 3" style="width: 200px; height: 200px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; flex-shrink: 0;">
+            <img src="https://i.pinimg.com/1200x/b7/2f/43/b72f43257a4225a6cd3a3898f3d8ed84.jpg" alt="Gallery 4" style="width: 200px; height: 200px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; flex-shrink: 0;">
+            
+        </div>
+    </div>
+</section>
+    <section id="gallery" class="section gallery-section">
+    <div class="container">
+        <span class="eyebrow">// gallery</span>
+        <h2 class="section-title">Gallery</h2>
+        <div class="gallery-grid" style="display: flex; flex-direction: row; gap: 24px; align-items: center; justify-content: center; flex-wrap: nowrap;">
             
             <img src="https://i.pinimg.com/1200x/1d/55/09/1d55091cd7e15913bd418d688e9ea765.jpg" alt="Gallery 2" style="width: 200px; height: 200px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; transform: rotate(270deg); flex-shrink: 0;">
-            
-            <img src="https://i.pinimg.com/1200x/88/db/2c/88db2ca3f14b2d09135b2e80c7eed12a.jpg" alt="Gallery 3" style="width: 200px; height: 200px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; flex-shrink: 0;">
-            
-            <img src="https://i.pinimg.com/1200x/b7/2f/43/b72f43257a4225a6cd3a3898f3d8ed84.jpg" alt="Gallery 4" style="width: 200px; height: 200px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; flex-shrink: 0;">
+            <img src="https://i.pinimg.com/1200x/62/0b/4b/620b4b6698eb2ad65be08f4acd1d029b.jpg" alt="Gallery 1" style="width: 200px; height: 200px; object-fit: cover; margin: 20px; border-radius: 12px; display: block; flex-shrink: 0;">         
+            <img src="https://i.pinimg.com/1200x/70/84/40/7084406b531207b189838db4a97b4c2b.jpg" alt="Gallery 3" style="width: 200px; height: 200px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; flex-shrink: 0;">
+            <img src="https://i.pinimg.com/1200x/df/f2/c2/dff2c2ad49eb0866a896469cdbb85a27.jpg" alt="Gallery 4" style="width: 200px; height: 200px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; flex-shrink: 0;">
+
             
         </div>
     </div>
