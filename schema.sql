@@ -1,15 +1,10 @@
 -- =========================================================
 -- Portfolio & Blog Database — full rebuild
--- Run this fresh after resetting your MySQL data folder.
+-- For Clever Cloud (or any host that already provides a fixed database).
 -- Matches the columns actually used in index.php:
 --   id, title, slug, category, content, image, author, post_date, updated_at
 -- =========================================================
 
-CREATE DATABASE IF NOT EXISTS portfolio_db
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
-
-USE portfolio_db;
 
 -- -------------------------------------------------------
 -- Table: blogs

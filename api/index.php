@@ -351,22 +351,40 @@ $blogs = $conn->query("SELECT * FROM blogs ORDER BY post_date DESC")->fetchAll()
         </div>
     </section>
 
-    <!-- Gallery Section -->
-    <section id="gallery" class="section gallery-section">
-        <div class="container">
-            <span class="eyebrow">// gallery</span>
-            <h2 class="section-title">Gallery</h2>
-            <div class="gallery-grid">
-                <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=300&h=300&fit=crop" alt="Gallery 1">
-                <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=300&h=300&fit=crop" alt="Gallery 2">
-                <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=300&h=300&fit=crop" alt="Gallery 3">
-                <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=300&h=300&fit=crop" alt="Gallery 4">
-                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=300&h=300&fit=crop" alt="Gallery 5">
-                <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=300&h=300&fit=crop" alt="Gallery 6">
-            </div>
+<!-- Gallery Section -->
+<section id="gallery" class="section gallery-section">
+    <div class="container">
+        <span class="eyebrow">// gallery</span>
+        <h2 class="section-title">Gallery</h2>
+        <div class="gallery-grid" style="display: flex; flex-direction: row; gap: 24px; align-items: center; justify-content: center; flex-wrap: nowrap;">
+            
+            <img 
+                src="img1.jpeg" 
+                alt="Gallery 1" 
+                style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; display: block; flex-shrink: 0;"
+            >
+            
+            <img 
+                src="img2.jpeg" 
+                alt="Gallery 2" 
+                style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; display: block; transform: rotate(270deg); flex-shrink: 0;"
+            >
+            
+            <img 
+                src="img3.jpeg" 
+                alt="Gallery 3" 
+                style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; display: block; flex-shrink: 0;"
+            >
+            
+            <img 
+                src="img4.jpeg" 
+                alt="Gallery 4" 
+                style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; display: block; flex-shrink: 0;"
+            >
+            
         </div>
-    </section>
-
+    </div>
+</section>
     <!-- Contact Section -->
     <section id="contact" class="section contact-section">
         <div class="container">
