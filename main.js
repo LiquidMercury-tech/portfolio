@@ -50,21 +50,22 @@ function validateContactForm() {
 }
 
 // ---------------------------------------------------------
-// Animated skill bars via Intersection Observer
+// Staggered skill-chip reveal via Intersection Observer
 // ---------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
-    const bars = document.querySelectorAll('.progress');
-    if (bars.length) {
+    const chips = document.querySelectorAll('.skill-chip');
+    if (chips.length) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    const bar = entry.target;
-                    bar.style.width = (bar.getAttribute('data-percent') || '0') + '%';
-                    observer.unobserve(bar);
+                    const chip = entry.target;
+                    const index = Array.from(chips).indexOf(chip);
+                    setTimeout(() => chip.classList.add('in-view'), index * 60);
+                    observer.unobserve(chip);
                 }
             });
-        }, { threshold: 0.4 });
-        bars.forEach(bar => observer.observe(bar));
+        }, { threshold: 0.2 });
+        chips.forEach(chip => observer.observe(chip));
     }
 
     // Close mobile menu automatically once the viewport grows past mobile size
