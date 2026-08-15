@@ -1,10 +1,11 @@
 <?php
 // index.php
-// Database configuration
-$host = '127.0.0.1';
-$dbname = 'portfolio_db';
-$username = 'root';
-$password = '';
+// Database configuration — reads from Vercel environment variables in
+// production, falls back to local XAMPP defaults for local testing.
+$host     = getenv('DB_HOST') ?: 'localhost';
+$dbname   = getenv('DB_NAME') ?: 'portfolio_db';
+$username = getenv('DB_USER') ?: 'root';
+$password = getenv('DB_PASS') ?: '';
 
 // Create connection
 try {
