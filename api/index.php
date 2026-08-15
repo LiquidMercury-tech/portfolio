@@ -358,13 +358,13 @@ $blogs = $conn->query("SELECT * FROM blogs ORDER BY post_date DESC")->fetchAll()
         <h2 class="section-title">Gallery</h2>
         <div class="gallery-grid" style="display: flex; flex-direction: row; gap: 24px; align-items: center; justify-content: center; flex-wrap: nowrap;">
             
-            <img src="public/img1.jpeg" alt="Gallery 1" style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; display: block; flex-shrink: 0;">
+            <img src="https://i.pinimg.com/1200x/62/0b/4b/620b4b6698eb2ad65be08f4acd1d029b.jpg" alt="Gallery 1" style="width: 600px; height: 600px; object-fit: cover; margin: 20px; border-radius: 12px; display: block; flex-shrink: 0;">
             
-            <img src="public/img2.jpeg" alt="Gallery 2" style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; display: block; transform: rotate(270deg); flex-shrink: 0;">
+            <img src="https://i.pinimg.com/1200x/1d/55/09/1d55091cd7e15913bd418d688e9ea765.jpg" alt="Gallery 2" style="width: 600px; height: 600px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; transform: rotate(270deg); flex-shrink: 0;">
             
-            <img src="public/img3.jpeg" alt="Gallery 3" style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; display: block; flex-shrink: 0;">
+            <img src="https://i.pinimg.com/1200x/88/db/2c/88db2ca3f14b2d09135b2e80c7eed12a.jpg" alt="Gallery 3" style="width: 600px; height: 600px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; flex-shrink: 0;">
             
-            <img src="public/img4.jpeg" alt="Gallery 4" style="width: 140px; height: 180px; object-fit: cover; border-radius: 12px; display: block; flex-shrink: 0;">
+            <img src="https://i.pinimg.com/1200x/b7/2f/43/b72f43257a4225a6cd3a3898f3d8ed84.jpg" alt="Gallery 4" style="width: 600px; height: 600px; object-fit: cover; border-radius: 12px; margin: 20px; display: block; flex-shrink: 0;">
             
         </div>
     </div>
