@@ -1,7 +1,7 @@
 <?php
 // index.php
 // Database configuration
-$host = 'localhost';
+$host = '127.0.0.1';
 $dbname = 'portfolio_db';
 $username = 'root';
 $password = '';
